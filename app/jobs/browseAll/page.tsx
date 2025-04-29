@@ -31,7 +31,7 @@ export default function JobsPage() {
   const providerUrl = process.env.NEXT_PUBLIC_PROVIDER_URL ?? `https://sepolia.infura.io/v3/26dbdcda81b64b77acb2273c0aa828dd`;
   const provider = new ethers.providers.JsonRpcProvider(providerUrl);
 
-  const contractAddress = process.env.NEXT_PUBLIC_CONTRACT_ADDRESS!;
+  const contractAddress = process.env.NEXT_PUBLIC_CONTRACT_ADDRESS;
   const contractAbi = [
     "function jobCounter() view returns (uint256)",
     "function jobs(uint256) view returns (address client, string description, uint256 budget, bool isOpen, address freelancer)",
@@ -42,32 +42,34 @@ export default function JobsPage() {
       setLoading(true);
       if (!provider) {
         console.error("Provider not available");
+        setLoading(false);
         return;
       }
-
-      const contract = new ethers.Contract(
-        contractAddress,
-        contractAbi,
-        provider
-      );
-      
+      if (!contractAddress) {
+        console.error("Contract address not set");
+        setLoading(false);
+        return;
+      }
       try {
+        const contract = new ethers.Contract(contractAddress, contractAbi, provider);
         const jobCountBN = await contract.jobCounter();
         const jobCount = jobCountBN.toNumber();
         const tempJobs: Job[] = [];
-
         for (let i = 1; i <= jobCount; i++) {
-          const jobData = await contract.jobs(i);
-          tempJobs.push({
-            id: i,
-            client: jobData.client,
-            description: jobData.description,
-            budget: ethers.utils.formatEther(jobData.budget),
-            isOpen: jobData.isOpen,
-            freelancer: jobData.freelancer,
-          });
+          try {
+            const jobData = await contract.jobs(i);
+            tempJobs.push({
+              id: i,
+              client: jobData.client,
+              description: jobData.description,
+              budget: ethers.utils.formatEther(jobData.budget),
+              isOpen: jobData.isOpen,
+              freelancer: jobData.freelancer,
+            });
+          } catch (err) {
+            console.warn(`Error fetching job ${i}:`, err);
+          }
         }
-
         setJobs(tempJobs);
       } catch (err) {
         console.error("Failed to fetch jobs:", err);
@@ -75,9 +77,8 @@ export default function JobsPage() {
         setLoading(false);
       }
     };
-
     fetchJobs();
-  }, [provider]);
+  }, []);
 
   return (
     <motion.div
