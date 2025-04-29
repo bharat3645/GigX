@@ -13,6 +13,7 @@ import {
 import { cn } from "@/lib/utils";
 import { useWallet } from "@/context/WalletContext";
 import Link from "next/link";
+import Image from "next/image";
 
 export function MainNav() {
   const { account, connectWallet } = useWallet();
@@ -20,8 +21,15 @@ export function MainNav() {
   return (
     <div className="flex items-center space-x-4 lg:space-x-6 z-50">
       <Link href="/" className="flex items-center space-x-2">
-        <Briefcase className="h-6 w-6 text-primary" />
-        <span className="font-bold text-xl">Task-Tokenizer</span>
+      <Image
+          src="/images/gigx.png"
+          alt="GigX Logo"
+          width={50}
+          height={50}
+          className="object-contain"
+          style={{marginTop: "6px"}}
+        />
+        <span className="font-bold text-xl">GigX</span>
       </Link>
       
       <NavigationMenu>
