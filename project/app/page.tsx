@@ -190,8 +190,8 @@ export default function Home() {
               <div className="text-center">
                 <div className="mx-auto w-[210px] h-[210px] rounded-full overflow-hidden mb-4">
                   <img
-                    src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=210&h=210&fit=crop&crop=faces"
-                    alt="Sarah Martinez"
+                    src="/images/sharvit.jpeg"
+                    alt="Sharvit Kashikar"
                     className="w-full h-full object-cover select-none"
                     draggable="false"
                     onContextMenu={(e) => e.preventDefault()}

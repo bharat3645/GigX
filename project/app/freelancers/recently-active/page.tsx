@@ -44,14 +44,14 @@ export default function RecentlyActivePage() {
           </p>
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-16">
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-11">
           {activeFreelancers.map((freelancer) => (
             <Link
               key={freelancer.id}
               href={`/freelancers/top-rated/${freelancer.id}`}
               className="cursor-pointer"
             >
-              <Card style={{ width: 'calc(100% + 50px)' }} className="bg-gray-900 border-gray-800 transition duration-300 hover:scale-105">
+              <Card style={{ width: 'calc(100% + 30px)' }} className="bg-gray-900 border-gray-800 transition duration-300 hover:scale-105">
                 <CardHeader className="flex flex-row items-center gap-4">
                   <Avatar className="h-12 w-12">
                     <AvatarImage src={freelancer.image} alt={freelancer.name} />
