@@ -20,7 +20,7 @@ export function MainNav() {
 
   return (
     <div className="flex items-center space-x-4 lg:space-x-6 z-50">
-      <Link href="/" className="flex items-center space-x-2">
+      <Link href="/" className="flex items-center space-x-0">
       <Image
           src="/images/gigx.png"
           alt="GigX Logo"
@@ -135,7 +135,7 @@ export function MainNav() {
       <Button
         variant={account ? "default" : "outline"}
         onClick={connectWallet}
-        className="ml-4"
+        className="ml-auto"
       >
         <Wallet2 className="mr-2 h-4 w-4" />
         {account ? `${account.slice(0, 6)}...${account.slice(-4)}` : "Connect Wallet"}

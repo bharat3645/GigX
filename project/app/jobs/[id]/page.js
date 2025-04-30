@@ -56,7 +56,7 @@ function GigDetails() {
 
     fetchJobs();
     console.log(account);
-  }, [provider]);
+  }, [provider, id]);
 
   const { id } = useParams();
   const router = useRouter();
