@@ -1,163 +1,71 @@
-# Task Tokenizer Web App
+# GigX
 
-Welcome to the Task Tokenizer project! This repository contains a full-stack decentralized freelance job marketplace, built with Next.js, Hardhat, and Solidity smart contracts. This guide will walk you through everything you need to know to get started, even if you're new to web development, Ethereum, or Docker.
+A decentralized freelance gig marketplace — Solidity smart contracts (Hardhat) plus a Next.js frontend. Built with [@rish170](https://github.com/rish170).
 
----
+> **Lineage:** GigX is a variant of the
+> [Task-Tokenizer](https://github.com/bharat3645/Task-Tokenizer) platform (the actively
+> maintained take on the tokenized task/gig idea). A further variant lives at
+> [AppXcess-GigX](https://github.com/bharat3645/AppXcess-GigX). Some internal naming
+> (`TaskToken` in package.json) still reflects that origin.
 
-## Table of Contents
-- [Features](#features)
-- [Project Structure](#project-structure)
-- [Prerequisites](#prerequisites)
-- [Getting Started (Local Development)](#getting-started-local-development)
-- [Smart Contract Deployment](#smart-contract-deployment)
-- [Running the Frontend](#running-the-frontend)
-- [Docker Deployment](#docker-deployment)
-- [Environment Variables](#environment-variables)
-- [Troubleshooting](#troubleshooting)
-- [License](#license)
+## What's in the repo
 
----
-
-## Features
-- Decentralized freelance job marketplace
-- Ethereum smart contracts for jobs, identity, reputation, and escrow
-- Modern Next.js frontend
-- Wallet integration (MetaMask, etc.)
-- Easy deployment with Docker
-
----
-
-## Project Structure
-```
-├── contracts/            # Solidity smart contracts
-├── scripts/              # Deployment and utility scripts
-├── project/              # Next.js frontend app
-│   ├── pages/            # App pages
-│   ├── components/       # React components
-│   ├── public/           # Static assets
-│   └── ...
-├── artifacts/            # Compiled contract artifacts (auto-generated)
-├── test/                 # Smart contract tests
-├── hardhat.config.js     # Hardhat configuration
-├── package.json          # Project dependencies
-├── Dockerfile            # Docker build instructions (in /project)
-└── README.md             # You're here!
-```
-
----
+- **`contracts/`** — Solidity contracts for jobs, identity, reputation, and escrow.
+- **`scripts/`** — Hardhat deployment scripts (Sepolia testnet); deployed addresses are written to `deployed-addresses.json`.
+- **`project/`** — the Next.js frontend (wallet connection via MetaMask).
+- **`test/`** — contract tests, `hardhat.config.js` — network config.
 
 ## Prerequisites
-- **Node.js** (v18 or higher recommended)
-- **npm** (comes with Node.js)
-- **Docker** (for containerized deployment, optional)
-- **Git** (for cloning the repo)
-- **MetaMask** or another Ethereum wallet (for interacting with the app)
 
----
+Node.js ≥ 18, npm, MetaMask (or another injected wallet), and — for deployment — a Sepolia RPC endpoint and a throwaway funded key.
 
-## Getting Started (Local Development)
+## Setup
 
-### 1. Clone the Repository
-```sh
-git clone https://github.com/your-username/Task-Tokenizer.git
-cd Task-Tokenizer
-```
-
-### 2. Install Dependencies
-#### For the root (smart contracts):
-```sh
+```bash
+git clone https://github.com/bharat3645/GigX.git
+cd GigX
 npm install
-```
-#### For the frontend (inside `project/`):
-```sh
-cd project
-npm install
+cd project && npm install && cd ..
 ```
 
-### 3. Set Up Environment Variables
-Create a `.env` file in both the root and `project/` directories (as needed):
+Create a root `.env` for contract deployment:
 
-#### Example `.env` (for smart contracts):
-```
-ALCHEMY_SEPOLIA_URL=https://sepolia.infura.io/v3/YOUR_INFURA_KEY
-PRIVATE_KEY=your_private_key
+```dotenv
+ALCHEMY_SEPOLIA_URL=https://eth-sepolia.g.alchemy.com/v2/YOUR_API_KEY
+PRIVATE_KEY=throwaway_deployer_key_without_0x
 ```
 
-#### Example `.env` (for frontend, in `project/`):
-```
+And in `project/.env` (frontend):
+
+```dotenv
 NEXT_PUBLIC_CONTRACT_ADDRESS=your_deployed_contract_address
-NEXT_PUBLIC_PROVIDER_URL=https://sepolia.infura.io/v3/YOUR_INFURA_KEY
+NEXT_PUBLIC_PROVIDER_URL=https://eth-sepolia.g.alchemy.com/v2/YOUR_API_KEY
 ```
 
----
+## Deploy contracts
 
-## Smart Contract Deployment
+```bash
+npx hardhat compile
+npx hardhat run scripts/deploy.js --network sepolia
+# addresses land in deployed-addresses.json — copy into project/.env
+```
 
-1. **Compile contracts:**
-   ```sh
-   npx hardhat compile
-   ```
-2. **Deploy contracts to Sepolia testnet:**
-   ```sh
-   npx hardhat run scripts/deploy.js --network sepolia
-   ```
-   - The deployed contract addresses will be saved to `deployed-addresses.json`.
-   - Copy the relevant address to your frontend `.env` as `NEXT_PUBLIC_CONTRACT_ADDRESS`.
+## Run the frontend
 
----
+```bash
+cd project
+npm run dev
+# http://localhost:3000
+```
 
-## Running the Frontend
+### Docker (frontend)
 
-1. **Start the development server:**
-   ```sh
-   cd project
-   npm run dev
-   ```
-2. **Open your browser:**
-   Visit [http://localhost:3000](http://localhost:3000) to view the app.
-
----
-
-## Docker Deployment
-
-1. **Build the Docker image:**
-   ```sh
-   cd project
-   docker build -t task-tokenizer-app .
-   ```
-2. **Run the Docker container:**
-   ```sh
-   docker run -p 3000:3000 --env-file .env task-tokenizer-app
-   ```
-   - The app will be available at [http://localhost:3000](http://localhost:3000).
-
----
-
-## Environment Variables
-- **Smart contract deployment:**
-  - `ALCHEMY_SEPOLIA_URL`: Your Infura/Alchemy endpoint for Sepolia testnet
-  - `PRIVATE_KEY`: Private key of your deployment wallet (keep it secret!)
-- **Frontend:**
-  - `NEXT_PUBLIC_CONTRACT_ADDRESS`: The address of your deployed contract
-  - `NEXT_PUBLIC_PROVIDER_URL`: The same Sepolia endpoint as above
-
----
-
-## Troubleshooting
-- **Contract address errors:**
-  - Make sure the address is copied correctly to the frontend `.env` and the server is restarted after changes.
-- **Environment variables not found:**
-  - Ensure `.env` files are in the correct directories and have no spaces around `=`.
-- **Docker issues:**
-  - Make sure your `.env` is present in the `project/` directory and referenced in the Docker run command.
-- **MetaMask not connecting:**
-  - Make sure MetaMask is set to the Sepolia network and your account has test ETH.
-
----
+```bash
+cd project
+docker build -t gigx-app .
+docker run -p 3000:3000 --env-file .env gigx-app
+```
 
 ## License
-This project is licensed under the MIT License.
 
----
-
-**Happy building! If you have questions, feel free to open an issue or discussion on the repository.**
+The project is intended to be MIT-licensed; **a LICENSE file has not been committed yet** — treat the licensing as unsettled until one lands.
