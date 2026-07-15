@@ -68,4 +68,4 @@ docker run -p 3000:3000 --env-file .env gigx-app
 
 ## License
 
-The project is intended to be MIT-licensed; **a LICENSE file has not been committed yet** — treat the licensing as unsettled until one lands.
+MIT — see [LICENSE](./LICENSE).
